@@ -44,6 +44,7 @@
             </section>
             <section class="expense-list">
                 <h3>Lista de Gastos</h3>
+                <button id="export-csv">Exportar a CSV</button>
                 <table id="expense-table">
                     <thead>
                         <tr>
@@ -61,6 +62,18 @@
                 <div id="expense-cards" class="mobile-only">
                     <!-- Cards for mobile -->
                 </div>
+            </section>
+            <section class="summary">
+                <h3>Resumen</h3>
+                <div class="summary-stats">
+                    <div class="stat">Total Gastado: $<span id="total-spent">0</span></div>
+                    <div class="stat">Número de Gastos: <span id="num-expenses">0</span></div>
+                    <div class="stat">Promedio por Gasto: $<span id="avg-expense">0</span></div>
+                </div>
+            </section>
+            <section class="chart-section">
+                <h3>Distribución de Gastos por Categoría</h3>
+                <canvas id="expense-chart" width="400" height="300"></canvas>
             </section>
             </main>
         </div>

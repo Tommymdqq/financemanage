@@ -3,12 +3,16 @@ const initialAmountInput = document.getElementById('initial-amount');
 const updateInitialBtn = document.getElementById('update-initial');
 const totalAmountSpan = document.getElementById('total-amount');
 const percentageSpentSpan = document.getElementById('percentage-spent');
+const totalSpentSpan = document.getElementById('total-spent');
+const numExpensesSpan = document.getElementById('num-expenses');
+const avgExpenseSpan = document.getElementById('avg-expense');
 const toggleThemeBtn = document.getElementById('toggle-theme');
 const expenseForm = document.getElementById('expense-form');
 const expenseNameInput = document.getElementById('expense-name');
 const expenseAmountInput = document.getElementById('expense-amount');
 const expenseCategorySelect = document.getElementById('expense-category');
 const expenseTbody = document.getElementById('expense-tbody');
+const exportCsvBtn = document.getElementById('export-csv');
 
 // Data
 let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
@@ -60,6 +64,9 @@ toggleThemeBtn.addEventListener('click', () => {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     toggleThemeBtn.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
 });
+
+// Export to CSV
+exportCsvBtn.addEventListener('click', exportToCSV);
 
 // Update initial amount
 updateInitialBtn.addEventListener('click', () => {
@@ -166,6 +173,9 @@ function renderExpenses() {
             deleteExpense(id);
         });
     });
+
+    // Draw chart
+    drawChart();
 }
 
 // Edit expense
@@ -195,6 +205,11 @@ function updateDisplay() {
     totalAmountSpan.textContent = remaining.toFixed(2);
     const percentage = initialAmount > 0 ? (totalSpent / initialAmount * 100).toFixed(2) : 0;
     percentageSpentSpan.textContent = `${percentage}%`;
+
+    // Summary stats
+    totalSpentSpan.textContent = totalSpent.toFixed(2);
+    numExpensesSpan.textContent = expenses.length;
+    avgExpenseSpan.textContent = expenses.length > 0 ? (totalSpent / expenses.length).toFixed(2) : '0.00';
 }
 
 // Save data
@@ -206,4 +221,82 @@ function saveData() {
 // Load data
 function loadData() {
     initialAmountInput.value = initialAmount;
+}
+
+// Draw expense chart
+function drawChart() {
+    const canvas = document.getElementById('expense-chart');
+    const ctx = canvas.getContext('2d');
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Calculate data
+    const categorySums = {};
+    expenses.forEach(exp => {
+        categorySums[exp.category] = (categorySums[exp.category] || 0) + exp.amount;
+    });
+
+    const categories = Object.keys(categorySums);
+    const amounts = Object.values(categorySums);
+
+    if (amounts.length === 0) {
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'center';
+        ctx.fillText('No hay gastos para mostrar', canvas.width / 2, canvas.height / 2);
+        return;
+    }
+
+    const total = amounts.reduce((a, b) => a + b, 0);
+
+    // Colors
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+
+    // Draw pie
+    let startAngle = 0;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 20;
+
+    amounts.forEach((amount, i) => {
+        const sliceAngle = (amount / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        startAngle += sliceAngle;
+    });
+
+    // Legend
+    const legendX = 20;
+    let legendY = 20;
+    categories.forEach((cat, i) => {
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillRect(legendX, legendY, 15, 15);
+        ctx.fillStyle = '#333';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${cat}: $${amounts[i].toFixed(2)}`, legendX + 20, legendY + 12);
+        legendY += 25;
+    });
+}
+
+// Export expenses to CSV
+function exportToCSV() {
+    let csv = 'Fecha,Nombre,Categoria,Monto\n';
+    expenses.forEach(e => {
+        csv += `${e.date},"${e.name}",${e.category},${e.amount}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gastos.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }

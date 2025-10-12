@@ -6,28 +6,51 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f4f4f4;
-    transition: background-color 0.3s, color 0.3s;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    transition: all 0.3s ease;
 }
 
 body.dark-mode {
-    background-color: #333;
-    color: #f4f4f4;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #ecf0f1;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+body.dark-mode .container {
+    background: rgba(44, 62, 80, 0.95);
+    color: #ecf0f1;
 }
 
 /* Header */
 header {
     text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2.5em;
+    font-weight: 300;
     margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #fff;
+}
+
+body.dark-mode header h1 {
+    color: #ecf0f1;
 }
 
 /* Tabs */
@@ -85,28 +108,68 @@ body.dark-mode .settings {
 }
 
 .total-section input {
-    padding: 5px;
-    width: 100px;
-    margin-right: 10px;
+    padding: 10px;
+    width: 120px;
+    margin-right: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1em;
+}
+
+#update-initial {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #007bff, #6610f2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#update-initial:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.total-display {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    transition: transform 0.3s ease;
+}
+
+.total-display:hover {
+    transform: translateY(-5px);
+}
+
+body.dark-mode .total-display {
+    background: #34495e;
 }
 
 .total-display h2 {
-    font-size: 2em;
+    font-size: 2.5em;
     margin: 10px 0;
+    font-weight: 300;
 }
 
 #toggle-theme {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 #toggle-theme:hover {
-    background-color: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Form */
@@ -136,21 +199,41 @@ body.dark-mode .settings {
 }
 
 #expense-form button {
-    padding: 10px;
-    background-color: #28a745;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #28a745, #20c997);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 #expense-form button:hover {
-    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Table */
 .expense-list h3 {
     margin-bottom: 15px;
+}
+
+#export-csv {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#export-csv:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 table {
@@ -183,28 +266,32 @@ body.dark-mode tbody tr:hover {
 
 .actions button {
     margin-right: 5px;
-    padding: 5px 10px;
+    padding: 8px 16px;
     border: none;
-    border-radius: 3px;
+    border-radius: 20px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 .edit-btn {
-    background-color: #ffc107;
+    background: linear-gradient(45deg, #ffc107, #fd7e14);
     color: black;
 }
 
 .edit-btn:hover {
-    background-color: #e0a800;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background: linear-gradient(45deg, #dc3545, #e83e8c);
     color: white;
 }
 
 .delete-btn:hover {
-    background-color: #c82333;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Mobile only */
@@ -215,18 +302,24 @@ body.dark-mode tbody tr:hover {
 /* Card styles for mobile */
 .card {
     background: #fff;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 10px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 body.dark-mode .card {
-    background: #444;
-    color: #f4f4f4;
+    background: #34495e;
+    color: #ecf0f1;
 }
 
 .card .date {
@@ -242,6 +335,58 @@ body.dark-mode .card {
 .card .actions {
     display: flex;
     gap: 10px;
+}
+
+/* Summary */
+.summary {
+    margin: 30px 0;
+}
+
+.summary h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    min-width: 150px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+}
+
+body.dark-mode .stat {
+    background: #34495e;
+}
+
+/* Chart */
+.chart-section {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.chart-section h3 {
+    margin-bottom: 20px;
+}
+
+#expense-chart {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive */
