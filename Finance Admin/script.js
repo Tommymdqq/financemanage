@@ -1,0 +1,209 @@
+// Elements
+const initialAmountInput = document.getElementById('initial-amount');
+const updateInitialBtn = document.getElementById('update-initial');
+const totalAmountSpan = document.getElementById('total-amount');
+const percentageSpentSpan = document.getElementById('percentage-spent');
+const toggleThemeBtn = document.getElementById('toggle-theme');
+const expenseForm = document.getElementById('expense-form');
+const expenseNameInput = document.getElementById('expense-name');
+const expenseAmountInput = document.getElementById('expense-amount');
+const expenseCategorySelect = document.getElementById('expense-category');
+const expenseTbody = document.getElementById('expense-tbody');
+
+// Data
+let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+let initialAmount = parseFloat(localStorage.getItem('initialAmount')) || 10000;
+let editingId = null;
+let activeTab = localStorage.getItem('activeTab') || 'home';
+
+// Load data on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    renderExpenses();
+    updateDisplay();
+    loadTheme();
+    switchToTab(activeTab);
+});
+
+// Load theme
+function loadTheme() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        toggleThemeBtn.textContent = 'Modo Claro';
+    } else {
+        toggleThemeBtn.textContent = 'Modo Oscuro';
+    }
+}
+
+// Switch tab
+function switchToTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+    document.getElementById(tab + '-tab').style.display = 'block';
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    localStorage.setItem('activeTab', tab);
+}
+
+// Tab event listeners
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        switchToTab(tab);
+    });
+});
+
+// Toggle theme
+toggleThemeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    toggleThemeBtn.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+});
+
+// Update initial amount
+updateInitialBtn.addEventListener('click', () => {
+    const newAmount = parseFloat(initialAmountInput.value);
+    if (newAmount >= 0) {
+        initialAmount = newAmount;
+        localStorage.setItem('initialAmount', initialAmount);
+        updateDisplay();
+    } else {
+        alert('El monto inicial debe ser positivo.');
+    }
+});
+
+// Form submit
+expenseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = expenseNameInput.value.trim();
+    const amount = parseFloat(expenseAmountInput.value);
+    const category = expenseCategorySelect.value;
+
+    if (!name || amount <= 0) {
+        alert('Por favor, ingresa un nombre válido y un monto positivo.');
+        return;
+    }
+
+    if (editingId !== null) {
+        // Edit existing
+        const expense = expenses.find(e => e.id === editingId);
+        if (expense) {
+            expense.name = name;
+            expense.amount = amount;
+            expense.category = category;
+        }
+        editingId = null;
+        expenseForm.querySelector('button[type="submit"]').textContent = 'Agregar Gasto';
+    } else {
+        // Add new
+        const newExpense = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString(),
+            name,
+            amount,
+            category
+        };
+        expenses.unshift(newExpense); // Newest first
+    }
+
+    saveData();
+    renderExpenses();
+    updateDisplay();
+    expenseForm.reset();
+    alert('Gasto agregado correctamente.');
+});
+
+// Render expenses
+function renderExpenses() {
+    expenseTbody.innerHTML = '';
+    const expenseCards = document.getElementById('expense-cards');
+    expenseCards.innerHTML = '';
+
+    expenses.forEach(expense => {
+        // Table row
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${expense.date}</td>
+            <td>${expense.name}</td>
+            <td>${expense.category}</td>
+            <td>$${expense.amount.toFixed(2)}</td>
+            <td class="actions">
+                <button class="edit-btn" data-id="${expense.id}">Editar</button>
+                <button class="delete-btn" data-id="${expense.id}">Eliminar</button>
+            </td>
+        `;
+        expenseTbody.appendChild(row);
+
+        // Mobile card
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="date">${expense.date}</div>
+            <div class="details">
+                <span><strong>${expense.name}</strong> - ${expense.category}</span>
+                <span>$${expense.amount.toFixed(2)}</span>
+            </div>
+            <div class="actions">
+                <button class="edit-btn" data-id="${expense.id}">Editar</button>
+                <button class="delete-btn" data-id="${expense.id}">Eliminar</button>
+            </div>
+        `;
+        expenseCards.appendChild(card);
+    });
+
+    // Add event listeners for edit/delete
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            editExpense(id);
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            deleteExpense(id);
+        });
+    });
+}
+
+// Edit expense
+function editExpense(id) {
+    const expense = expenses.find(e => e.id === id);
+    if (expense) {
+        expenseNameInput.value = expense.name;
+        expenseAmountInput.value = expense.amount;
+        expenseCategorySelect.value = expense.category;
+        editingId = id;
+        expenseForm.querySelector('button[type="submit"]').textContent = 'Actualizar Gasto';
+    }
+}
+
+// Delete expense
+function deleteExpense(id) {
+    expenses = expenses.filter(e => e.id !== id);
+    saveData();
+    renderExpenses();
+    updateDisplay();
+}
+
+// Update display
+function updateDisplay() {
+    const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const remaining = initialAmount - totalSpent;
+    totalAmountSpan.textContent = remaining.toFixed(2);
+    const percentage = initialAmount > 0 ? (totalSpent / initialAmount * 100).toFixed(2) : 0;
+    percentageSpentSpan.textContent = `${percentage}%`;
+}
+
+// Save data
+function saveData() {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    localStorage.setItem('initialAmount', initialAmount);
+}
+
+// Load data
+function loadData() {
+    initialAmountInput.value = initialAmount;
+}
