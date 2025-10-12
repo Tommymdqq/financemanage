@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Gastos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Control de Gastos</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="home">Inicio</button>
+                <button class="tab-btn" data-tab="settings">Ajustes</button>
+            </nav>
+            <button id="toggle-theme">Modo Oscuro</button>
+        </header>
+        <div id="home-tab" class="tab-content">
+            <div class="total-display">
+                <h2>Total Disponible: $<span id="total-amount">10000</span></h2>
+                <p>Porcentaje Gastado: <span id="percentage-spent">0%</span></p>
+            </div>
+            <main>
+            <section class="add-expense">
+                <h3>Agregar Gasto</h3>
+                <form id="expense-form">
+                    <label for="expense-name">Nombre del Gasto:</label>
+                    <input type="text" id="expense-name" required>
+                    
+                    <label for="expense-amount">Monto:</label>
+                    <input type="number" id="expense-amount" min="0.01" step="0.01" required>
+                    
+                    <label for="expense-category">Categoría:</label>
+                    <select id="expense-category">
+                        <option value="Comida">Comida</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Entretenimiento">Entretenimiento</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                    
+                    <button type="submit">Agregar Gasto</button>
+                </form>
+            </section>
+            <section class="expense-list">
+                <h3>Lista de Gastos</h3>
+                <table id="expense-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-tbody">
+                        <!-- Expenses will be added here -->
+                    </tbody>
+                </table>
+                <div id="expense-cards" class="mobile-only">
+                    <!-- Cards for mobile -->
+                </div>
+            </section>
+            </main>
+        </div>
+        <div id="settings-tab" class="tab-content" style="display:none;">
+            <h3>Ajustes</h3>
+            <div class="total-section">
+                <label for="initial-amount">Monto Inicial: $</label>
+                <input type="number" id="initial-amount" value="10000" min="0" step="0.01">
+                <button id="update-initial">Actualizar</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
