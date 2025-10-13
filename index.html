@@ -27,19 +27,29 @@
                 <form id="expense-form">
                     <label for="expense-name">Nombre del Gasto:</label>
                     <input type="text" id="expense-name" required>
-                    
+
                     <label for="expense-amount">Monto:</label>
                     <input type="number" id="expense-amount" min="0.01" step="0.01" required>
-                    
+
                     <label for="expense-category">Categoría:</label>
-                    <select id="expense-category">
-                        <option value="Comida">Comida</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Entretenimiento">Entretenimiento</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                    
+                    <input type="text" id="expense-category" placeholder="Ej: Comida, Transporte, etc." required>
+
                     <button type="submit">Agregar Gasto</button>
+                </form>
+            </section>
+            <section class="add-receivable">
+                <h3>Agregar Monto a Cobrar</h3>
+                <form id="receivable-form">
+                    <label for="receivable-name">Nombre del Monto a Cobrar:</label>
+                    <input type="text" id="receivable-name" required>
+
+                    <label for="receivable-amount">Monto:</label>
+                    <input type="number" id="receivable-amount" min="0.01" step="0.01" required>
+
+                    <label for="receivable-category">Categoría:</label>
+                    <input type="text" id="receivable-category" placeholder="Ej: Ventas, Préstamos, etc." required>
+
+                    <button type="submit">Agregar Monto a Cobrar</button>
                 </form>
             </section>
             <section class="expense-list">
@@ -63,12 +73,35 @@
                     <!-- Cards for mobile -->
                 </div>
             </section>
+            <section class="receivable-list">
+                <h3>Lista de Montos a Cobrar</h3>
+                <table id="receivable-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receivable-tbody">
+                        <!-- Receivables will be added here -->
+                    </tbody>
+                </table>
+                <div id="receivable-cards" class="mobile-only">
+                    <!-- Cards for mobile -->
+                </div>
+            </section>
             <section class="summary">
                 <h3>Resumen</h3>
                 <div class="summary-stats">
                     <div class="stat">Total Gastado: $<span id="total-spent">0</span></div>
                     <div class="stat">Número de Gastos: <span id="num-expenses">0</span></div>
                     <div class="stat">Promedio por Gasto: $<span id="avg-expense">0</span></div>
+                    <div class="stat">Total a Cobrar: $<span id="total-receivable">0</span></div>
+                    <div class="stat">Número de Montos a Cobrar: <span id="num-receivables">0</span></div>
+                    <div class="stat">Promedio por Monto a Cobrar: $<span id="avg-receivable">0</span></div>
                 </div>
             </section>
             <section class="chart-section">

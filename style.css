@@ -173,32 +173,39 @@ body.dark-mode .total-display {
 }
 
 /* Form */
-.add-expense {
+.add-expense,
+.add-receivable {
     margin-bottom: 30px;
 }
 
-.add-expense h3 {
+.add-expense h3,
+.add-receivable h3 {
     margin-bottom: 15px;
 }
 
-#expense-form {
+#expense-form,
+#receivable-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#expense-form label {
+#expense-form label,
+#receivable-form label {
     font-weight: bold;
 }
 
 #expense-form input,
-#expense-form select {
+#expense-form select,
+#receivable-form input,
+#receivable-form select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-#expense-form button {
+#expense-form button,
+#receivable-form button {
     padding: 12px 24px;
     background: linear-gradient(45deg, #28a745, #20c997);
     color: white;
@@ -209,7 +216,8 @@ body.dark-mode .total-display {
     font-weight: 500;
 }
 
-#expense-form button:hover {
+#expense-form button:hover,
+#receivable-form button:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -274,22 +282,26 @@ body.dark-mode tbody tr:hover {
     font-weight: 500;
 }
 
-.edit-btn {
+.edit-btn,
+.edit-receivable-btn {
     background: linear-gradient(45deg, #ffc107, #fd7e14);
     color: black;
 }
 
-.edit-btn:hover {
+.edit-btn:hover,
+.edit-receivable-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
-.delete-btn {
+.delete-btn,
+.delete-receivable-btn {
     background: linear-gradient(45deg, #dc3545, #e83e8c);
     color: white;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.delete-receivable-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }

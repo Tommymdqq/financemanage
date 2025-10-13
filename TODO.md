@@ -1,8 +1,9 @@
-# TODO: Expense Tracker App
+# TODO: Agregar Montos a Cobrar
 
 ## Steps to Complete:
 
-- [x] Step 1: Create index.html - Basic HTML structure with total display, form, and expense table.
-- [x] Step 2: Create style.css - Minimalist, responsive CSS with dark mode.
-- [x] Step 3: Create script.js - JavaScript logic for functionality, localStorage, validations, edit/delete.
-- [x] Step 4: Test the application by opening index.html in a browser. (Improved with mobile card view)
+- [x] Step 1: Actualizar index.html - Agregar sección para agregar montos a cobrar y tabla para listarlos.
+- [x] Step 2: Actualizar script.js - Agregar lógica para montos a cobrar: variables, funciones para agregar/editar/eliminar, guardar/cargar de localStorage, actualizar cálculos y display.
+- [x] Step 3: Actualizar cálculos - Modificar total disponible para incluir montos a cobrar (inicial + cobrar - gastos).
+- [x] Step 4: Actualizar resumen - Incluir estadísticas para montos a cobrar.
+- [x] Step 5: Probar la aplicación abriendo index.html en el navegador.

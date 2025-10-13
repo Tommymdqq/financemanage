@@ -6,24 +6,35 @@ const percentageSpentSpan = document.getElementById('percentage-spent');
 const totalSpentSpan = document.getElementById('total-spent');
 const numExpensesSpan = document.getElementById('num-expenses');
 const avgExpenseSpan = document.getElementById('avg-expense');
+const totalReceivableSpan = document.getElementById('total-receivable');
+const numReceivablesSpan = document.getElementById('num-receivables');
+const avgReceivableSpan = document.getElementById('avg-receivable');
 const toggleThemeBtn = document.getElementById('toggle-theme');
 const expenseForm = document.getElementById('expense-form');
 const expenseNameInput = document.getElementById('expense-name');
 const expenseAmountInput = document.getElementById('expense-amount');
-const expenseCategorySelect = document.getElementById('expense-category');
+const expenseCategoryInput = document.getElementById('expense-category');
 const expenseTbody = document.getElementById('expense-tbody');
+const receivableForm = document.getElementById('receivable-form');
+const receivableNameInput = document.getElementById('receivable-name');
+const receivableAmountInput = document.getElementById('receivable-amount');
+const receivableCategoryInput = document.getElementById('receivable-category');
+const receivableTbody = document.getElementById('receivable-tbody');
 const exportCsvBtn = document.getElementById('export-csv');
 
 // Data
 let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+let receivables = JSON.parse(localStorage.getItem('receivables')) || [];
 let initialAmount = parseFloat(localStorage.getItem('initialAmount')) || 10000;
 let editingId = null;
+let editingReceivableId = null;
 let activeTab = localStorage.getItem('activeTab') || 'home';
 
 // Load data on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
     renderExpenses();
+    renderReceivables();
     updateDisplay();
     loadTheme();
     switchToTab(activeTab);
@@ -85,7 +96,7 @@ expenseForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = expenseNameInput.value.trim();
     const amount = parseFloat(expenseAmountInput.value);
-    const category = expenseCategorySelect.value;
+    const category = expenseCategoryInput.value.trim();
 
     if (!name || amount <= 0) {
         alert('Por favor, ingresa un nombre válido y un monto positivo.');
@@ -119,6 +130,47 @@ expenseForm.addEventListener('submit', (e) => {
     updateDisplay();
     expenseForm.reset();
     alert('Gasto agregado correctamente.');
+});
+
+// Receivable form submit
+receivableForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = receivableNameInput.value.trim();
+    const amount = parseFloat(receivableAmountInput.value);
+    const category = receivableCategoryInput.value.trim();
+
+    if (!name || amount <= 0) {
+        alert('Por favor, ingresa un nombre válido y un monto positivo.');
+        return;
+    }
+
+    if (editingReceivableId !== null) {
+        // Edit existing
+        const receivable = receivables.find(r => r.id === editingReceivableId);
+        if (receivable) {
+            receivable.name = name;
+            receivable.amount = amount;
+            receivable.category = category;
+        }
+        editingReceivableId = null;
+        receivableForm.querySelector('button[type="submit"]').textContent = 'Agregar Monto a Cobrar';
+    } else {
+        // Add new
+        const newReceivable = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString(),
+            name,
+            amount,
+            category
+        };
+        receivables.unshift(newReceivable); // Newest first
+    }
+
+    saveData();
+    renderReceivables();
+    updateDisplay();
+    receivableForm.reset();
+    alert('Monto a cobrar agregado correctamente.');
 });
 
 // Render expenses
@@ -178,13 +230,67 @@ function renderExpenses() {
     drawChart();
 }
 
+// Render receivables
+function renderReceivables() {
+    receivableTbody.innerHTML = '';
+    const receivableCards = document.getElementById('receivable-cards');
+    receivableCards.innerHTML = '';
+
+    receivables.forEach(receivable => {
+        // Table row
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${receivable.date}</td>
+            <td>${receivable.name}</td>
+            <td>${receivable.category}</td>
+            <td>$${receivable.amount.toFixed(2)}</td>
+            <td class="actions">
+                <button class="edit-receivable-btn" data-id="${receivable.id}">Editar</button>
+                <button class="delete-receivable-btn" data-id="${receivable.id}">Eliminar</button>
+            </td>
+        `;
+        receivableTbody.appendChild(row);
+
+        // Mobile card
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="date">${receivable.date}</div>
+            <div class="details">
+                <span><strong>${receivable.name}</strong> - ${receivable.category}</span>
+                <span>$${receivable.amount.toFixed(2)}</span>
+            </div>
+            <div class="actions">
+                <button class="edit-receivable-btn" data-id="${receivable.id}">Editar</button>
+                <button class="delete-receivable-btn" data-id="${receivable.id}">Eliminar</button>
+            </div>
+        `;
+        receivableCards.appendChild(card);
+    });
+
+    // Add event listeners for edit/delete
+    document.querySelectorAll('.edit-receivable-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            editReceivable(id);
+        });
+    });
+
+    document.querySelectorAll('.delete-receivable-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            deleteReceivable(id);
+        });
+    });
+}
+
 // Edit expense
 function editExpense(id) {
     const expense = expenses.find(e => e.id === id);
     if (expense) {
         expenseNameInput.value = expense.name;
         expenseAmountInput.value = expense.amount;
-        expenseCategorySelect.value = expense.category;
+        expenseCategoryInput.value = expense.category;
         editingId = id;
         expenseForm.querySelector('button[type="submit"]').textContent = 'Actualizar Gasto';
     }
@@ -198,10 +304,31 @@ function deleteExpense(id) {
     updateDisplay();
 }
 
+// Edit receivable
+function editReceivable(id) {
+    const receivable = receivables.find(r => r.id === id);
+    if (receivable) {
+        receivableNameInput.value = receivable.name;
+        receivableAmountInput.value = receivable.amount;
+        receivableCategoryInput.value = receivable.category;
+        editingReceivableId = id;
+        receivableForm.querySelector('button[type="submit"]').textContent = 'Actualizar Monto a Cobrar';
+    }
+}
+
+// Delete receivable
+function deleteReceivable(id) {
+    receivables = receivables.filter(r => r.id !== id);
+    saveData();
+    renderReceivables();
+    updateDisplay();
+}
+
 // Update display
 function updateDisplay() {
     const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const remaining = initialAmount - totalSpent;
+    const totalReceivable = receivables.reduce((sum, r) => sum + r.amount, 0);
+    const remaining = initialAmount + totalReceivable - totalSpent;
     totalAmountSpan.textContent = remaining.toFixed(2);
     const percentage = initialAmount > 0 ? (totalSpent / initialAmount * 100).toFixed(2) : 0;
     percentageSpentSpan.textContent = `${percentage}%`;
@@ -210,11 +337,15 @@ function updateDisplay() {
     totalSpentSpan.textContent = totalSpent.toFixed(2);
     numExpensesSpan.textContent = expenses.length;
     avgExpenseSpan.textContent = expenses.length > 0 ? (totalSpent / expenses.length).toFixed(2) : '0.00';
+    totalReceivableSpan.textContent = totalReceivable.toFixed(2);
+    numReceivablesSpan.textContent = receivables.length;
+    avgReceivableSpan.textContent = receivables.length > 0 ? (totalReceivable / receivables.length).toFixed(2) : '0.00';
 }
 
 // Save data
 function saveData() {
     localStorage.setItem('expenses', JSON.stringify(expenses));
+    localStorage.setItem('receivables', JSON.stringify(receivables));
     localStorage.setItem('initialAmount', initialAmount);
 }
 
