@@ -661,12 +661,13 @@ function showSettings() {
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
     modal.innerHTML = `
-        <div class="card-bg p-6 rounded-3xl max-w-lg w-full mx-4">
+        <div class="card-bg p-6 rounded-3xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold">⚙️ Ajustes</h3>
-                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white p-2 -m-2">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
                 </button>
+                <h3 class="text-xl font-bold">⚙️ Ajustes</h3>
+                <div></div> <!-- Espaciador para centrar el título -->
             </div>
 
             <div class="space-y-6">
