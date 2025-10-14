@@ -221,10 +221,12 @@ function toggleModal(show) {
     const modal = document.getElementById('expense-modal');
     if (show) {
         modal.classList.remove('hidden');
+        modal.classList.add('modal-enter');
         // Haptic Feedback (Simulación)
         if (navigator.vibrate) navigator.vibrate(50);
     } else {
         modal.classList.add('hidden');
+        modal.classList.remove('modal-enter');
         // Limpiar el monto al cerrar
         document.getElementById('monto').value = '';
     }
@@ -656,6 +658,81 @@ function showReports() {
             </div>
         `;
     });
+
+    // Nueva función: Gráfica de tendencia de gastos
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    const monthlyData = calculateMonthlyTrendData();
+
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: monthlyData.labels,
+            datasets: [{
+                label: 'Gastos Mensuales',
+                data: monthlyData.data,
+                borderColor: '#EF4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white',
+                        callback: function(value) {
+                            return formatCurrency(value);
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Nueva función auxiliar para calcular datos mensuales
+function calculateMonthlyTrendData() {
+    const now = new Date();
+    const months = [];
+    const data = [];
+
+    for (let i = 5; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const monthName = date.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+
+        const monthExpenses = expenses.filter(exp => {
+            const expDate = new Date(exp.date);
+            return expDate.getMonth() === date.getMonth() && expDate.getFullYear() === date.getFullYear();
+        });
+
+        const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+        months.push(monthName);
+        data.push(total);
+    }
+
+    return { labels: months, data: data };
 }
 
 // Función para mostrar presupuestos

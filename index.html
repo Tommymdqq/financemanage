@@ -61,6 +61,80 @@
             transition: width 0.5s ease-in-out;
         }
 
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 2s infinite;
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        /* Animación para el FAB */
+        .fab:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+
+        /* Animación para tarjetas */
+        .card-bg {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-bg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Animación para botones de navegación */
+        .nav-btn {
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Animación para modales */
+        .modal-enter {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
         /* --- NUEVO: Estilo para la Tarjeta de Resumen Mensual (Simulando el gradiente de la imagen) --- */
         .summary-gradient-card {
             /* Simula el tono rojizo a la izquierda (Gasto) y azulado a la derecha (Saldo) */
@@ -84,16 +158,16 @@
 
     <!-- Contenido Principal - Dashboard -->
     <div id="main-content" class="p-4 sm:p-6 pb-20 max-w-lg mx-auto">
-        
+
         <!-- Saludo -->
-        <header class="mb-6 pt-2">
+        <header class="mb-6 pt-2 animate-fade-in-up">
             <p class="text-white text-lg opacity-80">Hola, <span id="user-name">Usuario</span>.</p>
             <!-- Saldo Total (Máxima Jerarquía H1, XXL, audaz) -->
             <h1 id="saldo-total" class="saldo-h1 mt-1">$0.00</h1>
         </header>
 
         <!-- Tarjeta de Resumen Mensual (CON GRADIENTE) -->
-        <div class="summary-gradient-card p-4 rounded-xl mb-8">
+        <div class="summary-gradient-card p-4 rounded-xl mb-8 animate-slide-in-right">
             <h2 class="text-sm font-semibold mb-3 text-white opacity-70">Resumen del Mes</h2>
             <div class="grid grid-cols-3 gap-4 text-center">
                 <!-- Monto de Gasto (Rojo Suave) -->
@@ -177,7 +251,7 @@
     <div id="toast-container"></div>
 
     <!-- Modal Flotante de Añadir Gasto (Quick Entry - Pantalla 2) -->
-    <div id="expense-modal" class="fixed inset-0 z-50 hidden" style="background-color: rgba(0, 0, 0, 0.7);">
+    <div id="expense-modal" class="fixed inset-0 z-50 hidden modal-enter" style="background-color: rgba(0, 0, 0, 0.7);">
         <div class="absolute bottom-0 w-full max-w-lg mx-auto">
             <div class="card-bg p-6 rounded-t-3xl h-[85vh]">
 
