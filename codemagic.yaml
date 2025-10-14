@@ -17,25 +17,22 @@ workflows:
           include: true
           source: true
    scripts:
-      - name: 🔧 Instalar dependencias (npm & pod) # <-- 8 espacios
-        script: |                                 # <-- 8 espacios (alineado con 'name')
+      - name: 🔧 Instalar dependencias (npm & pod)
+        script: |
           npm install
           cd ios
           pod install
           cd ..
           
-      - name: 💻 Compilar Aplicación Web            # <-- 8 espacios
-        script: |                                 # <-- 8 espacios (alineado con 'name')
+      - name: 💻 Compilar Aplicación Web
+        script: |
           npm run build
           
       - name: ⚙️ Sincronizar Capacitor con iOS
         script: |
           npx cap sync ios
           
-      #... y el resto de los scripts, manteniendo el mismo patrón
-          
       - name: 🧱 Compilar proyecto iOS (Archive)
-        # Asegúrate que el scheme 'App' sea el correcto, lo es por defecto en Capacitor
         script: |
           xcodebuild -workspace ios/App.xcworkspace \
             -scheme App \
@@ -44,8 +41,6 @@ workflows:
             clean archive
             
       - name: 📦 Exportar IPA
-        # REQUIERE: El archivo 'exportOptions.plist' en la raíz del proyecto.
-        # Asegúrate de que el 'method' y el 'teamID' en ese archivo sean correctos.
         script: |
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
