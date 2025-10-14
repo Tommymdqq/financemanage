@@ -1,1 +1,46 @@
+workflows:
+  build_ios:
+    name: Build iOS (financemanage)
+    max_build_duration: 60
+    environment:
+      vars:
+        APP_NAME: "financemanage"
+        APP_BUNDLE_ID: "com.financemanage.app"
+      node: latest
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    scripts:
+      - name: 🔧 Instalar dependencias
+        script: |
+          npm install
+      - name: ⚙️ Inicializar Capacitor
+        script: |
+          npx cap sync ios
+      - name: 🧱 Compilar proyecto iOS
+        script: |
+          cd ios
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath ../build/App.xcarchive \
+            clean archive
+      - name: 📦 Exportar IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath ./build/App.xcarchive \
+            -exportOptionsPlist ../exportOptions.plist \
+            -exportPath ./build/ipa
+    artifacts:
+      - build/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - your_email@example.com
 
