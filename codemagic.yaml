@@ -16,31 +16,28 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-    scripts:
+        scripts:
       - name: 🔧 Instalar dependencias
-        script: |
-          npm install
+        script: npm install
       - name: ⚙️ Inicializar Capacitor
-        script: |
-          npx cap sync ios
+        script: npx cap sync ios
       - name: 🧱 Compilar proyecto iOS
         script: |
           cd ios
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
-            -archivePath ../build/App.xcarchive \
-            clean archive
-      - name: 📦 Exportar IPA
-        script: |
-          xcodebuild -exportArchive \
-            -archivePath ./build/App.xcarchive \
-            -exportOptionsPlist ../exportOptions.plist \
-            -exportPath ./build/ipa
+            -sdk iphoneos \
+            -derivedDataPath ../build
+
     artifacts:
       - build/ipa/*.ipa
     publishing:
       email:
         recipients:
           - your_email@example.com
+          
+    environment:
+      groups:
+        - ios_credentials
 
