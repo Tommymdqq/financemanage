@@ -1,25 +1,20 @@
 workflows:
-  build_ios:
+  build_ios:  # <-- Dos espacios de indentación desde 'workflows'
     name: Build iOS (financemanage)
     max_build_duration: 60
     environment:
       vars:
         APP_NAME: "financemanage"
-        APP_BUNDLE_ID: "com.financemanage.app"
-      node: latest
-      xcode: latest
-      cocoapods: default
+        # ...
     triggering:
       events:
         - push
-      branch_patterns:
-        - pattern: "main"
-          include: true
-          source: true
-   scripts:
-      - name: 🔧 Instalar dependencias
-        script: |
-          npm install
+      # ...
+    scripts:  # <-- Dos espacios de indentación desde 'build_ios'
+      - name: 🔧 Instalar dependencias
+        script: | # <-- Cuatro espacios de indentación desde 'build_ios'
+          npm install
+      # ...
       - name: 💻 Compilar Aplicación Web (NUEVO PASO)
         script: |
           # Asegúrate de que este comando es el correcto para tu proyecto (ej. ng build, vue-cli-service build)
