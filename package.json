@@ -9,10 +9,7 @@
     "sync-ios": "npx cap sync ios"  
   "lint": "..."
 },
-   "dependencies": { 
-  // ... sigue la propiedad "dependencies"
-  }
-}
+  
   "keywords": [
     "capacitor",
     "ionic"
