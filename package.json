@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Tu descripción de la app",
   "main": "index.js",
-  "scripts": {
-    "start": "...",
-    "test": "...",
-    "build": "vite build" 
-  },
+ "scripts": {
+  "start": "...",
+  "build": "npx vite build", 
+  "lint": "..."
+},
   "keywords": [
     "capacitor",
     "ionic"
