@@ -1,13 +1,21 @@
 {
   "name": "finance-manage-app",
   "version": "1.0.0",
-  // ... otras propiedades
+  "description": "Tu descripción de la app",
+  "main": "index.js",
   "scripts": {
-    "start": "vite",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build",  
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
-    // ASEGÚRATE DE PONER UNA COMA (,) DESPUÉS DE "build" SI HAY OTRO SCRIPT DEBAJO
+    "start": "...",
+    "test": "...",
+    "build": "vite build" 
+    // Si este es el último script, NO lleva coma.
   },
-  // ... dependencias y devDependencies
+  "keywords": [
+    "capacitor",
+    "ionic"
+  ],
+  "author": "Tu nombre",
+  "license": "ISC",
+  "dependencies": {
+    // ... tus dependencias
+  }
 }
