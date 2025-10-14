@@ -262,10 +262,16 @@
                 <div class="mb-6">
                     <label for="income-category" class="block text-sm font-medium text-gray-400">Categoría</label>
                     <select id="income-category" class="w-full card-bg border border-gray-600 rounded-lg p-3 mt-1 focus:border-success focus:ring-success focus:ring-1 text-white">
-                        <option value="Trabajo">Trabajo</option>
-                        <option value="Préstamo">Préstamo</option>
-                        <option value="Venta">Venta</option>
-                        <option value="Otros">Otros</option>
+                        <option value="Trabajo">💼 Trabajo</option>
+                        <option value="Préstamo">💳 Préstamo</option>
+                        <option value="Venta">🛒 Venta</option>
+                        <option value="Regalo">🎁 Regalo</option>
+                        <option value="Inversión">📈 Inversión</option>
+                        <option value="Reembolso">🔄 Reembolso</option>
+                        <option value="Freelance">💻 Freelance</option>
+                        <option value="Bonos">🏆 Bonos</option>
+                        <option value="Dividendos">💰 Dividendos</option>
+                        <option value="Otros">❓ Otros</option>
                     </select>
                 </div>
 
@@ -313,69 +319,7 @@
     <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Script para pantalla completa y deshabilitar zoom/scroll en móviles -->
-    <script>
-        // Función para activar pantalla completa en móviles
-        function requestFullscreen() {
-            const doc = document.documentElement;
-            if (doc.requestFullscreen) {
-                doc.requestFullscreen();
-            } else if (doc.webkitRequestFullscreen) { // Safari
-                doc.webkitRequestFullscreen();
-            } else if (doc.msRequestFullscreen) { // IE/Edge
-                doc.msRequestFullscreen();
-            }
-        }
 
-        // Detectar si es un dispositivo móvil
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        // Deshabilitar zoom y scroll en móviles
-        if (isMobile()) {
-            // Prevenir zoom con doble toque
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(event) {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-
-            // Prevenir zoom con pinch
-            document.addEventListener('touchmove', function(event) {
-                if (event.touches.length > 1) {
-                    event.preventDefault();
-                }
-            }, { passive: false });
-
-            // Prevenir scroll
-            document.addEventListener('touchmove', function(event) {
-                event.preventDefault();
-            }, { passive: false });
-
-            // Intentar pantalla completa al cargar
-            setTimeout(() => {
-                requestFullscreen();
-            }, 1000);
-
-            // También intentar al primer toque/interacción del usuario
-            document.addEventListener('touchstart', function initFullscreen() {
-                requestFullscreen();
-                document.removeEventListener('touchstart', initFullscreen);
-            }, { once: true });
-        }
-
-        // Para desktop, solo prevenir scroll si es necesario
-        if (!isMobile()) {
-            // Opcional: prevenir scroll en desktop también
-            // document.addEventListener('wheel', function(event) {
-            //     event.preventDefault();
-            // }, { passive: false });
-        }
-    </script>
 
     <script src="script.js"></script>
 </body>
