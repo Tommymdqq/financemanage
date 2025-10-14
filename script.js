@@ -644,14 +644,49 @@ function showBudgets() {
         spentByCategory[exp.category] = (spentByCategory[exp.category] || 0) + exp.amount;
     });
 
-    let budgetText = '💰 Presupuestos\n\n';
-    budgets.forEach(budget => {
-        const spent = spentByCategory[budget.category] || 0;
-        const percentage = Math.round((spent / budget.limit) * 100);
-        budgetText += `${budget.category}: ${formatCurrency(spent)} / ${formatCurrency(budget.limit)} (${percentage}%)\n`;
-    });
+    // Crear modal de presupuestos
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    modal.innerHTML = `
+        <div class="card-bg p-6 rounded-3xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white p-2 -m-2">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h3 class="text-xl font-bold">💰 Presupuestos</h3>
+                <div></div> <!-- Espaciador para centrar el título -->
+            </div>
 
-    alert(budgetText);
+            <div class="space-y-4">
+                ${budgets.map(budget => {
+                    const spent = spentByCategory[budget.category] || 0;
+                    const percentage = Math.round((spent / budget.limit) * 100);
+                    const colorClass = percentage >= 91 ? 'text-danger' : percentage >= 75 ? 'text-warning' : 'text-success';
+                    const fillClass = percentage >= 91 ? 'bg-danger' : percentage >= 75 ? 'bg-warning' : 'bg-success';
+
+                    return `
+                        <div class="card-bg p-4 rounded-xl">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">${budget.category}</span>
+                                <span class="text-sm opacity-70">${percentage}%</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm opacity-70">${formatCurrency(spent)} gastado</span>
+                                <span class="text-sm opacity-70">${formatCurrency(budget.limit)} límite</span>
+                            </div>
+                            <div class="progress-bar-container w-full">
+                                <div class="progress-fill ${fillClass}" style="width: ${Math.min(percentage, 100)}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    lucide.createIcons();
 }
 
 // Función para mostrar ajustes
