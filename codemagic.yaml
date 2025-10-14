@@ -1,44 +1,62 @@
 workflows:
-  build_ios:  # <-- Dos espacios de indentación desde 'workflows'
+  build_ios:
     name: Build iOS (financemanage)
     max_build_duration: 60
     environment:
       vars:
         APP_NAME: "financemanage"
-        # ...
+        APP_BUNDLE_ID: "com.financemanage.app"
+      node: latest
+      xcode: latest
+      cocoapods: default
     triggering:
       events:
         - push
-      # ...
-    scripts:  # <-- Dos espacios de indentación desde 'build_ios'
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
+    scripts:
       - name: 🔧 Instalar dependencias
-        script: | # <-- Cuatro espacios de indentación desde 'build_ios'
-          npm install
-      # ...
-      - name: 💻 Compilar Aplicación Web (NUEVO PASO)
-        script: |
-          # Asegúrate de que este comando es el correcto para tu proyecto (ej. ng build, vue-cli-service build)
-          npm run build 
-      - name: ⚙️ Inicializar Capacitor
-        script: |
-          npx cap sync ios
-# ... (rest of the workflow)
-      - name: 🧱 Compilar proyecto iOS
         script: |
+          npm install
+          # Instala CocoaPods si es necesario (para plugins nativos)
           cd ios
-          xcodebuild -workspace App.xcworkspace \
+          pod install
+          cd ..
+          
+      - name: 💻 Compilar Aplicación Web (Agregado)
+        # Este comando compila tu frontend (Angular, React, Vue, etc.)
+        # Asegúrate de que 'npm run build' esté definido en tu package.json
+        script: |
+          npm run build
+          
+      - name: ⚙️ Sincronizar Capacitor con iOS
+        # Transfiere los archivos web compilados al proyecto nativo
+        script: |
+          npx cap sync ios
+          
+      - name: 🧱 Compilar proyecto iOS (Archive)
+        # Asegúrate que el scheme 'App' sea el correcto, lo es por defecto en Capacitor
+        script: |
+          xcodebuild -workspace ios/App.xcworkspace \
             -scheme App \
             -configuration Release \
-            -archivePath ../build/App.xcarchive \
+            -archivePath build/App.xcarchive \
             clean archive
+            
       - name: 📦 Exportar IPA
+        # REQUIERE: El archivo 'exportOptions.plist' en la raíz del proyecto.
+        # Asegúrate de que el 'method' y el 'teamID' en ese archivo sean correctos.
         script: |
           xcodebuild -exportArchive \
-            -archivePath ./build/App.xcarchive \
-            -exportOptionsPlist ../exportOptions.plist \
-            -exportPath ./build/ipa
+            -archivePath build/App.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath build/ipa
+            
     artifacts:
       - build/ipa/*.ipa
+      
     publishing:
       email:
         recipients:
