@@ -1,9 +1,9 @@
 workflows:
-  build_ios:
-    name: Build iOS (financemanage)
+  build_ios: # <-- 2 espacios
+    name: Build iOS (financemanage) # <-- 4 espacios
     max_build_duration: 60
-    environment:
-      vars:
+    environment: # <-- 4 espacios
+      vars: # <-- 6 espacios
         APP_NAME: "financemanage"
         APP_BUNDLE_ID: "com.financemanage.app"
       node: latest
@@ -16,26 +16,23 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-    scripts:
-          - name: 🔧 Instalar dependencias (npm & pod)
-        script: |
-          npm install  # <--- ESTE PASO DEBE FUNCIONAR
+    scripts: # <-- 4 espacios
+      - name: 🔧 Instalar dependencias (npm & pod) # <-- 6 espacios
+        script: | # <-- 6 espacios (Alineado con 'name')
+          npm install
           cd ios
           pod install
           cd ..
           
       - name: 💻 Compilar Aplicación Web
-        # Ahora llamará al script modificado: npx vite build
         script: |
-          npm run build 
+          npm run build
           
       - name: ⚙️ Sincronizar Capacitor con iOS
-        # Copia los archivos web compilados al proyecto nativo
         script: |
           npx cap sync ios
           
       - name: 🧱 Compilar proyecto iOS (Archive)
-        # Compila y archiva el proyecto de Xcode
         script: |
           xcodebuild -workspace ios/App.xcworkspace \
             -scheme App \
@@ -44,17 +41,16 @@ workflows:
             clean archive
             
       - name: 📦 Exportar IPA
-        # Exporta el archivo .ipa. REQUIERE: 'exportOptions.plist' en la raíz.
         script: |
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
             -exportOptionsPlist exportOptions.plist \
             -exportPath build/ipa
             
-    artifacts:
+    artifacts: # <-- 4 espacios
       - build/ipa/*.ipa
       
-    publishing:
+    publishing: # <-- 4 espacios
       email:
         recipients:
           - your_email@example.com
