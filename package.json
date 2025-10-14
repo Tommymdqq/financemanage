@@ -7,7 +7,6 @@
     "start": "...",
     "test": "...",
     "build": "vite build" 
-    // Si este es el último script, NO lleva coma.
   },
   "keywords": [
     "capacitor",
@@ -16,6 +15,6 @@
   "author": "Tu nombre",
   "license": "ISC",
   "dependencies": {
-    // ... tus dependencias
+  
   }
 }
