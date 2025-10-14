@@ -24,13 +24,13 @@ workflows:
           pod install
           cd ..
           
-      - name: 💻 Compilar Aplicación Web
+       - name: 💻 Compilar Aplicación Web
         script: |
           npm run build
           
-      - name: ⚙️ Sincronizar Capacitor con iOS
+       - name: 💻 Compilar Aplicación Web
         script: |
-          npx cap sync ios
+          npm run build
           
       - name: 🧱 Compilar proyecto iOS (Archive)
         script: |
