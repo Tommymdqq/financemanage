@@ -16,13 +16,18 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-    scripts:
-      - name: 🔧 Instalar dependencias
-        script: |
-          npm install
-      - name: ⚙️ Inicializar Capacitor
-        script: |
-          npx cap sync ios
+   scripts:
+      - name: 🔧 Instalar dependencias
+        script: |
+          npm install
+      - name: 💻 Compilar Aplicación Web (NUEVO PASO)
+        script: |
+          # Asegúrate de que este comando es el correcto para tu proyecto (ej. ng build, vue-cli-service build)
+          npm run build 
+      - name: ⚙️ Inicializar Capacitor
+        script: |
+          npx cap sync ios
+# ... (rest of the workflow)
       - name: 🧱 Compilar proyecto iOS
         script: |
           cd ios
