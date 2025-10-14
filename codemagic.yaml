@@ -17,20 +17,17 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: 🔧 Instalar dependencias (npm & pod)
+          - name: 🔧 Instalar dependencias (npm & pod)
         script: |
-          # 1. Instalar dependencias de Node.js
-          npm install
-          
-          # 2. Instalar dependencias nativas de iOS (CocoaPods)
+          npm install  # <--- ESTE PASO DEBE FUNCIONAR
           cd ios
           pod install
           cd ..
           
       - name: 💻 Compilar Aplicación Web
-        # Ejecuta el comando 'build' de tu package.json
+        # Ahora llamará al script modificado: npx vite build
         script: |
-          npm run build
+          npm run build 
           
       - name: ⚙️ Sincronizar Capacitor con iOS
         # Copia los archivos web compilados al proyecto nativo
