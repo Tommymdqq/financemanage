@@ -25,11 +25,11 @@ const categories = [
 
 // Función de formato (ej: 1230.50 -> $1.230,50)
 const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-AR', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'ARS',
         minimumFractionDigits: 2
-    }).format(amount).replace('$', '$ ');
+    }).format(amount);
 };
 
 // Función para obtener la clase de color basada en el porcentaje
