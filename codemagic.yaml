@@ -16,22 +16,23 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-    scripts:
-       - name: 🔧 Instalar dependencias (npm & pod) # <-- 8 espacios de indentación
-        script: |                                 # <-- 8 espacios de indentación
+   scripts:
+      - name: 🔧 Instalar dependencias (npm & pod) # <-- 8 espacios
+        script: |                                 # <-- 8 espacios (alineado con 'name')
           npm install
           cd ios
           pod install
           cd ..
           
-      - - name: 💻 Compilar Aplicación Web            # <-- 8 espacios de indentación
-        script: |                                 # <-- ¡DEBE ALINEARSE CON 'name'!
-          npx npm run build
+      - name: 💻 Compilar Aplicación Web            # <-- 8 espacios
+        script: |                                 # <-- 8 espacios (alineado con 'name')
+          npm run build
           
       - name: ⚙️ Sincronizar Capacitor con iOS
-        # Transfiere los archivos web compilados al proyecto nativo
         script: |
           npx cap sync ios
+          
+      #... y el resto de los scripts, manteniendo el mismo patrón
           
       - name: 🧱 Compilar proyecto iOS (Archive)
         # Asegúrate que el scheme 'App' sea el correcto, lo es por defecto en Capacitor
