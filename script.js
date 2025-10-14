@@ -475,6 +475,20 @@ function toggleSettingsModal(show) {
     }
 }
 
+// Categorías de ingresos disponibles
+const incomeCategories = [
+    { name: 'Trabajo', icon: 'briefcase' },
+    { name: 'Préstamo', icon: 'credit-card' },
+    { name: 'Venta', icon: 'shopping-bag' },
+    { name: 'Regalo', icon: 'gift' },
+    { name: 'Inversión', icon: 'trending-up' },
+    { name: 'Reembolso', icon: 'refresh-cw' },
+    { name: 'Freelance', icon: 'laptop' },
+    { name: 'Bonos', icon: 'award' },
+    { name: 'Dividendos', icon: 'dollar-sign' },
+    { name: 'Otros', icon: 'more-horizontal' },
+];
+
 // Función para guardar ingreso
 function saveIncome() {
     const amount = parseFloat(document.getElementById('income-amount').value);
