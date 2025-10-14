@@ -17,19 +17,16 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: 🔧 Instalar dependencias
-        script: |
+       - name: 🔧 Instalar dependencias (npm & pod) # <-- 8 espacios de indentación
+        script: |                                 # <-- 8 espacios de indentación
           npm install
-          # Instala CocoaPods si es necesario (para plugins nativos)
           cd ios
           pod install
           cd ..
           
-      - name: 💻 Compilar Aplicación Web (Agregado)
-        # Este comando compila tu frontend (Angular, React, Vue, etc.)
-        # Asegúrate de que 'npm run build' esté definido en tu package.json
-         script: |
-          npx npm run build  # <-- CAMBIO AQUÍ: Agregamos 'npx'
+      - - name: 💻 Compilar Aplicación Web            # <-- 8 espacios de indentación
+        script: |                                 # <-- ¡DEBE ALINEARSE CON 'name'!
+          npx npm run build
           
       - name: ⚙️ Sincronizar Capacitor con iOS
         # Transfiere los archivos web compilados al proyecto nativo
