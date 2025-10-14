@@ -4,9 +4,9 @@
   "description": "Tu descripción de la app",
   "main": "index.js",
  "scripts": {
-  "start": "...",
-  "build": "npx vite build", 
-  "sync-ios": "npx cap sync ios"
+   "start": "...",
+    "build": "npx vite build", 
+    "sync-ios": "npx cap sync ios"  
   "lint": "..."
 },
   "keywords": [
