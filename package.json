@@ -1,14 +1,13 @@
 {
   "name": "finance-manage-app",
   "version": "1.0.0",
-  "description": "...",
+  // ... otras propiedades
   "scripts": {
-    "start": "...",
-    "test": "...",
-    "build": "vite build",   <-- ¡ASEGÚRATE DE AGREGAR ESTO!
-    "lint": "..."
+    "start": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build",  
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    // ASEGÚRATE DE PONER UNA COMA (,) DESPUÉS DE "build" SI HAY OTRO SCRIPT DEBAJO
   },
-  "dependencies": {
-    // ...
-  }
+  // ... dependencias y devDependencies
 }
