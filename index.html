@@ -3,122 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Gastos</title>
-    <link rel="stylesheet" href="style.css">
+    <title>FinanZen - Dashboard</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuente Inter (preferencia según especificación) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconos Lucide (Limpios y modernos) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 1.1 Paleta de Colores y Tipografía Global */
+        :root {
+            --bg-principal: #121212;
+            --tarjeta-fondo: #1F2937;
+            --color-primario: #3B82F6;
+            --exito: #4ADE80;
+            --alerta: #FB923C;
+            --peligro: #F87171;
+        }
+        body {
+            background-color: var(--bg-principal);
+            font-family: 'Inter', sans-serif;
+            color: white; /* Texto Principal */
+            padding-bottom: 72px; /* Espacio para la barra de navegación fija */
+        }
+        /* Configuración de Tailwind para usar las variables CSS */
+        .card-bg { background-color: var(--tarjeta-fondo); }
+        .text-primary { color: var(--color-primario); }
+        .text-success { color: var(--exito); }
+        .text-warning { color: var(--alerta); }
+        .text-danger { color: var(--peligro); }
+        .bg-primary { background-color: var(--color-primario); }
+
+        /* Estilo para el FAB */
+        .fab {
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Estilo para el campo de Saldo Total (H1, XXL) */
+        .saldo-h1 {
+            font-size: 3rem; /* XXL */
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        /* Estilo para la barra de progreso */
+        .progress-bar-container {
+            height: 6px;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* --- NUEVO: Estilo para la Tarjeta de Resumen Mensual (Simulando el gradiente de la imagen) --- */
+        .summary-gradient-card {
+            /* Simula el tono rojizo a la izquierda (Gasto) y azulado a la derecha (Saldo) */
+            background-image: linear-gradient(to right, rgba(248, 113, 113, 0.05), #1F2937 20%, #1F2937 80%, rgba(59, 130, 246, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        /* Estilo para las notificaciones Toast */
+        #toast-container {
+            position: fixed;
+            bottom: 80px; /* Sobre la barra de navegación */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Control de Gastos</h1>
-            <nav class="tabs">
-                <button class="tab-btn active" data-tab="home">Inicio</button>
-                <button class="tab-btn" data-tab="settings">Ajustes</button>
-            </nav>
-            <button id="toggle-theme">Modo Oscuro</button>
+
+    <!-- Contenido Principal - Dashboard -->
+    <div id="main-content" class="p-4 sm:p-6 pb-20 max-w-lg mx-auto">
+        
+        <!-- Saludo -->
+        <header class="mb-6 pt-2">
+            <p class="text-white text-lg opacity-80">Hola, <span id="user-name">Usuario</span>.</p>
+            <!-- Saldo Total (Máxima Jerarquía H1, XXL, audaz) -->
+            <h1 id="saldo-total" class="saldo-h1 mt-1">$0.00</h1>
         </header>
-        <div id="home-tab" class="tab-content">
-            <div class="total-display">
-                <h2>Total Disponible: $<span id="total-amount">10000</span></h2>
-                <p>Porcentaje Gastado: <span id="percentage-spent">0%</span></p>
+
+        <!-- Tarjeta de Resumen Mensual (CON GRADIENTE) -->
+        <div class="summary-gradient-card p-4 rounded-xl mb-8">
+            <h2 class="text-sm font-semibold mb-3 text-white opacity-70">Resumen del Mes</h2>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <!-- Monto de Gasto (Rojo Suave) -->
+                <div class="flex flex-col items-center">
+                    <p class="text-xs opacity-70">Gasto del Mes</p>
+                    <p id="monto-gasto" class="text-lg font-bold text-danger mt-1">$0.00</p>
+                </div>
+                <!-- Monto de Ingreso (Verde Vibrante) -->
+                <div class="flex flex-col items-center">
+                    <p class="text-xs opacity-70">Ingreso del Mes</p>
+                    <p id="monto-ingreso" class="text-lg font-bold text-success mt-1">$0.00</p>
+                </div>
+                <!-- Saldo Neto (Color Primario) -->
+                <div class="flex flex-col items-center">
+                    <p class="text-xs opacity-70">Saldo Neto</p>
+                    <p id="saldo-neto" class="text-lg font-bold text-primary mt-1">$0.00</p>
+                </div>
             </div>
-            <main>
-            <section class="add-expense">
-                <h3>Agregar Gasto</h3>
-                <form id="expense-form">
-                    <label for="expense-name">Nombre del Gasto:</label>
-                    <input type="text" id="expense-name" required>
-
-                    <label for="expense-amount">Monto:</label>
-                    <input type="number" id="expense-amount" min="0.01" step="0.01" required>
-
-                    <label for="expense-category">Categoría:</label>
-                    <input type="text" id="expense-category" placeholder="Ej: Comida, Transporte, etc." required>
-
-                    <button type="submit">Agregar Gasto</button>
-                </form>
-            </section>
-            <section class="add-receivable">
-                <h3>Agregar Monto a Cobrar</h3>
-                <form id="receivable-form">
-                    <label for="receivable-name">Nombre del Monto a Cobrar:</label>
-                    <input type="text" id="receivable-name" required>
-
-                    <label for="receivable-amount">Monto:</label>
-                    <input type="number" id="receivable-amount" min="0.01" step="0.01" required>
-
-                    <label for="receivable-category">Categoría:</label>
-                    <input type="text" id="receivable-category" placeholder="Ej: Ventas, Préstamos, etc." required>
-
-                    <button type="submit">Agregar Monto a Cobrar</button>
-                </form>
-            </section>
-            <section class="expense-list">
-                <h3>Lista de Gastos</h3>
-                <button id="export-csv">Exportar a CSV</button>
-                <table id="expense-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Monto</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expense-tbody">
-                        <!-- Expenses will be added here -->
-                    </tbody>
-                </table>
-                <div id="expense-cards" class="mobile-only">
-                    <!-- Cards for mobile -->
-                </div>
-            </section>
-            <section class="receivable-list">
-                <h3>Lista de Montos a Cobrar</h3>
-                <table id="receivable-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Monto</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="receivable-tbody">
-                        <!-- Receivables will be added here -->
-                    </tbody>
-                </table>
-                <div id="receivable-cards" class="mobile-only">
-                    <!-- Cards for mobile -->
-                </div>
-            </section>
-            <section class="summary">
-                <h3>Resumen</h3>
-                <div class="summary-stats">
-                    <div class="stat">Total Gastado: $<span id="total-spent">0</span></div>
-                    <div class="stat">Número de Gastos: <span id="num-expenses">0</span></div>
-                    <div class="stat">Promedio por Gasto: $<span id="avg-expense">0</span></div>
-                    <div class="stat">Total a Cobrar: $<span id="total-receivable">0</span></div>
-                    <div class="stat">Número de Montos a Cobrar: <span id="num-receivables">0</span></div>
-                    <div class="stat">Promedio por Monto a Cobrar: $<span id="avg-receivable">0</span></div>
-                </div>
-            </section>
-            <section class="chart-section">
-                <h3>Distribución de Gastos por Categoría</h3>
-                <canvas id="expense-chart" width="400" height="300"></canvas>
-            </section>
-            </main>
         </div>
-        <div id="settings-tab" class="tab-content" style="display:none;">
-            <h3>Ajustes</h3>
-            <div class="total-section">
-                <label for="initial-amount">Monto Inicial: $</label>
-                <input type="number" id="initial-amount" value="10000" min="0" step="0.01">
-                <button id="update-initial">Actualizar</button>
+
+        <!-- Presupuestos en Riesgo -->
+        <section id="presupuestos-riesgo" class="mb-8">
+            <h2 class="text-lg font-semibold mb-4">Presupuestos en Riesgo</h2>
+            <!-- Las tarjetas se insertarán aquí por JS -->
+            <div id="riesgo-cards" class="grid grid-cols-3 gap-3">
+                <!-- Ejemplo de tarjeta de presupuesto (se genera dinámicamente) -->
+            </div>
+            <!-- Mensaje si no hay presupuestos en riesgo -->
+            <p id="no-riesgo-msg" class="text-center text-sm opacity-60 mt-4 hidden">¡Excelente! Ningún presupuesto en riesgo.</p>
+        </section>
+
+        <!-- Transacciones Recientes -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Transacciones Recientes</h2>
+                <div class="flex space-x-2">
+                    <button onclick="toggleIncomeModal(true)" class="text-sm text-success font-medium hover:opacity-80 transition duration-150">+ Ingreso</button>
+                    <button onclick="toggleSettingsModal(true)" class="text-sm text-primary font-medium hover:opacity-80 transition duration-150">Ajustes</button>
+                </div>
+            </div>
+            <ul id="transacciones-list" class="space-y-3">
+                <!-- Las transacciones se insertarán aquí por JS -->
+            </ul>
+        </section>
+
+    </div>
+
+    <!-- Barra de Navegación Inferior Fija (Bottom Nav) -->
+    <nav class="fixed bottom-0 left-0 right-0 h-16 card-bg border-t border-gray-700 max-w-lg mx-auto z-50 rounded-t-xl shadow-2xl">
+        <div class="flex justify-around items-center h-full">
+            <!-- 1. Inicio (Activo) -->
+            <div class="flex flex-col items-center text-primary text-xs w-1/5">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span>Inicio</span>
+            </div>
+            <!-- 2. Reportes -->
+            <button data-tab="reports" class="nav-btn flex flex-col items-center text-gray-400 hover:text-white transition duration-150 text-xs w-1/5">
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                <span>Reportes</span>
+            </button>
+            <!-- 3. FAB (Añadir Gasto) -->
+            <div class="w-1/5 flex justify-center -mt-6">
+                <button id="fab-add-expense" class="fab bg-primary text-white rounded-full flex items-center justify-center transition duration-150 hover:bg-blue-700 focus:outline-none" onclick="toggleModal(true)">
+                    <i data-lucide="plus" class="w-8 h-8"></i>
+                </button>
+                <span class="absolute bottom-2 text-xs text-gray-400">Añadir Gasto</span>
+            </div>
+            <!-- 4. Presupuestos -->
+            <button data-tab="budgets" class="nav-btn flex flex-col items-center text-gray-400 hover:text-white transition duration-150 text-xs w-1/5">
+                <i data-lucide="piggy-bank" class="w-5 h-5"></i>
+                <span>Presupuestos</span>
+            </button>
+            <!-- 5. Ajustes -->
+            <button data-tab="settings" class="nav-btn flex flex-col items-center text-gray-400 hover:text-white transition duration-150 text-xs w-1/5">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span>Ajustes</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenedor para Notificaciones Toast -->
+    <div id="toast-container"></div>
+
+    <!-- Modal Flotante de Añadir Gasto (Quick Entry - Pantalla 2) -->
+    <div id="expense-modal" class="fixed inset-0 z-50 hidden" style="background-color: rgba(0, 0, 0, 0.7);">
+        <div class="absolute bottom-0 w-full max-w-lg mx-auto">
+            <div class="card-bg p-6 rounded-t-3xl h-[85vh]">
+
+                <!-- Encabezado de la Modal -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Añadir Transacción</h3>
+                    <button onclick="toggleModal(false)" class="text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Campo Monto (Focus inmediato y grande) -->
+                <div class="mb-6">
+                    <label for="monto" class="block text-sm font-medium text-gray-400">Monto</label>
+                    <input type="number" id="monto" class="w-full text-4xl bg-transparent border-b-2 border-gray-600 focus:border-primary focus:outline-none mt-1 pb-2 font-extrabold text-white" placeholder="0,00" autofocus>
+                </div>
+
+                <!-- Selección de Categoría (Carrusel Horizontal de Iconos) -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-400 mb-3">Categoría</label>
+                    <div id="category-carousel" class="flex overflow-x-auto space-x-4 pb-2">
+                        <!-- Las categorías se cargarán aquí por JS -->
+                    </div>
+                </div>
+
+                <!-- Campos Opcionales (Inicialmente Colapsados) -->
+                <div id="optional-fields" class="mt-8 border-t border-gray-700 pt-4">
+                    <button class="flex justify-between items-center w-full text-white opacity-80 mb-3" onclick="toggleOptionalFields()">
+                        <span class="font-medium">Detalles Adicionales</span>
+                        <i id="details-icon" data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div id="optional-content" class="space-y-4 hidden">
+                         <!-- Fuente de la cuenta -->
+                        <div>
+                            <label for="fuente" class="block text-sm font-medium text-gray-400">Fuente (Cuenta)</label>
+                            <select id="fuente" class="w-full card-bg border border-gray-600 rounded-lg p-2 mt-1 focus:border-primary focus:ring-primary focus:ring-1">
+                                <option value="efectivo">Efectivo</option>
+                                <option value="tarjeta1">Tarjeta A</option>
+                                <option value="banco2">Banco B</option>
+                            </select>
+                        </div>
+                        <!-- Fecha y Nota -->
+                        <div>
+                            <label for="fecha" class="block text-sm font-medium text-gray-400">Fecha</label>
+                            <input type="date" id="fecha" class="w-full card-bg border border-gray-600 rounded-lg p-2 mt-1 focus:border-primary focus:ring-primary focus:ring-1 text-white" value="2023-10-25">
+                        </div>
+                        <div>
+                            <label for="nota" class="block text-sm font-medium text-gray-400">Nota/Descripción</label>
+                            <input type="text" id="nota" class="w-full card-bg border border-gray-600 rounded-lg p-2 mt-1 focus:border-primary focus:ring-primary focus:ring-1 text-white" placeholder="Ej: Cena en restaurante">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Guardar -->
+                <button class="bg-primary text-white text-lg font-bold w-full py-3 rounded-xl mt-10 transition duration-150 hover:bg-blue-700" onclick="saveTransaction()">
+                    Guardar Gasto
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Modal para Agregar Ingreso -->
+    <div id="income-modal" class="fixed inset-0 z-50 hidden" style="background-color: rgba(0, 0, 0, 0.7);">
+        <div class="absolute bottom-0 w-full max-w-lg mx-auto">
+            <div class="card-bg p-6 rounded-t-3xl h-[70vh]">
+
+                <!-- Encabezado de la Modal -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Agregar Ingreso</h3>
+                    <button onclick="toggleIncomeModal(false)" class="text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Campo Monto -->
+                <div class="mb-6">
+                    <label for="income-amount" class="block text-sm font-medium text-gray-400">Monto</label>
+                    <input type="number" id="income-amount" class="w-full text-4xl bg-transparent border-b-2 border-gray-600 focus:border-success focus:outline-none mt-1 pb-2 font-extrabold text-white" placeholder="0,00" autofocus>
+                </div>
+
+                <!-- Categoría -->
+                <div class="mb-6">
+                    <label for="income-category" class="block text-sm font-medium text-gray-400">Categoría</label>
+                    <select id="income-category" class="w-full card-bg border border-gray-600 rounded-lg p-3 mt-1 focus:border-success focus:ring-success focus:ring-1 text-white">
+                        <option value="Trabajo">Trabajo</option>
+                        <option value="Préstamo">Préstamo</option>
+                        <option value="Venta">Venta</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-6">
+                    <label for="income-name" class="block text-sm font-medium text-gray-400">Descripción</label>
+                    <input type="text" id="income-name" class="w-full card-bg border border-gray-600 rounded-lg p-3 mt-1 focus:border-success focus:ring-success focus:ring-1 text-white" placeholder="Ej: Nómina mensual">
+                </div>
+
+                <!-- Botón Guardar -->
+                <button class="bg-success text-white text-lg font-bold w-full py-3 rounded-xl mt-10 transition duration-150 hover:bg-green-700" onclick="saveIncome()">
+                    Guardar Ingreso
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Cambiar Monto Inicial -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden" style="background-color: rgba(0, 0, 0, 0.7);">
+        <div class="absolute bottom-0 w-full max-w-lg mx-auto">
+            <div class="card-bg p-6 rounded-t-3xl h-[50vh]">
+
+                <!-- Encabezado de la Modal -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Ajustes</h3>
+                    <button onclick="toggleSettingsModal(false)" class="text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Monto Inicial -->
+                <div class="mb-6">
+                    <label for="initial-amount" class="block text-sm font-medium text-gray-400">Monto Inicial</label>
+                    <input type="number" id="initial-amount" class="w-full text-2xl bg-transparent border-b-2 border-gray-600 focus:border-primary focus:outline-none mt-1 pb-2 font-extrabold text-white" placeholder="10000">
+                </div>
+
+                <!-- Botón Guardar -->
+                <button class="bg-primary text-white text-lg font-bold w-full py-3 rounded-xl mt-10 transition duration-150 hover:bg-blue-700" onclick="saveInitialAmount()">
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
