@@ -1,0 +1,14 @@
+{
+  "name": "finance-manage-app",
+  "version": "1.0.0",
+  "description": "...",
+  "scripts": {
+    "start": "...",
+    "test": "...",
+    "build": "vite build",   <-- ¡ASEGÚRATE DE AGREGAR ESTO!
+    "lint": "..."
+  },
+  "dependencies": {
+    // ...
+  }
+}
