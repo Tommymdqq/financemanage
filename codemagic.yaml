@@ -16,23 +16,29 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-   scripts:
+    scripts:
       - name: 🔧 Instalar dependencias (npm & pod)
         script: |
+          # 1. Instalar dependencias de Node.js
           npm install
+          
+          # 2. Instalar dependencias nativas de iOS (CocoaPods)
           cd ios
           pod install
           cd ..
           
       - name: 💻 Compilar Aplicación Web
+        # Ejecuta el comando 'build' de tu package.json
         script: |
           npm run build
           
       - name: ⚙️ Sincronizar Capacitor con iOS
+        # Copia los archivos web compilados al proyecto nativo
         script: |
           npx cap sync ios
           
       - name: 🧱 Compilar proyecto iOS (Archive)
+        # Compila y archiva el proyecto de Xcode
         script: |
           xcodebuild -workspace ios/App.xcworkspace \
             -scheme App \
@@ -41,6 +47,7 @@ workflows:
             clean archive
             
       - name: 📦 Exportar IPA
+        # Exporta el archivo .ipa. REQUIERE: 'exportOptions.plist' en la raíz.
         script: |
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
