@@ -314,6 +314,40 @@
     <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Script para pantalla completa en móviles -->
+    <script>
+        // Función para activar pantalla completa en móviles
+        function requestFullscreen() {
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            } else if (doc.webkitRequestFullscreen) { // Safari
+                doc.webkitRequestFullscreen();
+            } else if (doc.msRequestFullscreen) { // IE/Edge
+                doc.msRequestFullscreen();
+            }
+        }
+
+        // Detectar si es un dispositivo móvil
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Intentar pantalla completa al cargar si es móvil
+        if (isMobile()) {
+            // Esperar un poco para que la página cargue
+            setTimeout(() => {
+                requestFullscreen();
+            }, 1000);
+
+            // También intentar al primer toque/interacción del usuario
+            document.addEventListener('touchstart', function initFullscreen() {
+                requestFullscreen();
+                document.removeEventListener('touchstart', initFullscreen);
+            }, { once: true });
+        }
+    </script>
+
     <script src="script.js"></script>
 </body>
 </html>

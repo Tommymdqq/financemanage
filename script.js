@@ -25,11 +25,14 @@ const categories = [
 
 // Función de formato (ej: 1230.50 -> $1.230,50)
 const formatCurrency = (amount) => {
+    // Limitar el monto para evitar deformaciones en la UI
+    const limitedAmount = Math.abs(amount) > 999999999 ? 999999999 : amount;
     return new Intl.NumberFormat('es-AR', {
         style: 'currency',
         currency: 'ARS',
-        minimumFractionDigits: 2
-    }).format(amount);
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(limitedAmount);
 };
 
 // Función para obtener la clase de color basada en el porcentaje
@@ -273,11 +276,11 @@ function saveTransaction() {
     // Crear el gasto usando la lógica original
     const expense = {
         id: Date.now(),
-        amount: monto,
+        amount: Math.min(monto, 999999999), // Limitar monto máximo
         category: category,
-        name: nota || category, // Usar nota como nombre, o categoría por defecto
+        name: (nota || category).substring(0, 50), // Limitar nombre a 50 caracteres
         date: fecha,
-        note: nota
+        note: nota ? nota.substring(0, 100) : '' // Limitar nota a 100 caracteres
     };
 
     // Agregar a expenses y guardar
@@ -300,8 +303,10 @@ function saveTransaction() {
 function changeUserName() {
     const newName = prompt('Ingresa tu nombre:');
     if (newName && newName.trim()) {
-        localStorage.setItem('userName', newName.trim());
-        document.getElementById('user-name').textContent = newName.trim();
+        // Limitar el nombre a 20 caracteres para evitar deformaciones
+        const limitedName = newName.trim().substring(0, 20);
+        localStorage.setItem('userName', limitedName);
+        document.getElementById('user-name').textContent = limitedName;
     }
 }
 
@@ -475,9 +480,9 @@ function saveIncome() {
 
     const receivable = {
         id: Date.now(),
-        amount: amount,
+        amount: Math.min(amount, 999999999), // Limitar monto máximo
         category: category,
-        name: name.trim()
+        name: name.trim().substring(0, 50) // Limitar nombre a 50 caracteres
     };
 
     receivables.push(receivable);
@@ -491,7 +496,7 @@ function saveIncome() {
 function saveInitialAmount() {
     const newAmount = parseFloat(document.getElementById('initial-amount').value);
     if (newAmount >= 0) {
-        initialAmount = newAmount;
+        initialAmount = Math.min(newAmount, 999999999); // Limitar monto máximo
         localStorage.setItem('initialAmount', initialAmount);
         renderDashboard();
         showToast('Monto inicial actualizado.');
