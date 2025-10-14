@@ -16,21 +16,21 @@ workflows:
         - pattern: "main"
           include: true
           source: true
-    scripts: # <-- 4 espacios
-      - name: 🔧 Instalar dependencias (npm & pod) # <-- 6 espacios
-        script: | # <-- 6 espacios (Alineado con 'name')
+    scripts:
+      - name: 🔧 Instalar dependencias (npm & pod)
+        script: |
           npm install
           cd ios
           pod install
           cd ..
           
-       - name: 💻 Compilar Aplicación Web
+      - name: 💻 Compilar Aplicación Web
         script: |
           npm run build
           
-       - name: 💻 Compilar Aplicación Web
+      - name: ⚙️ Sincronizar Capacitor con iOS
         script: |
-          npm run build
+          npm run sync-ios
           
       - name: 🧱 Compilar proyecto iOS (Archive)
         script: |
@@ -46,7 +46,6 @@ workflows:
             -archivePath build/App.xcarchive \
             -exportOptionsPlist exportOptions.plist \
             -exportPath build/ipa
-            
     artifacts: # <-- 4 espacios
       - build/ipa/*.ipa
       
