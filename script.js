@@ -861,7 +861,10 @@ function showSettings() {
                             + Agregar Ingreso
                         </button>
                         <button onclick="exportData()" class="w-full bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
-                            Exportar Datos
+                            Exportar Datos (JSON)
+                        </button>
+                        <button onclick="exportToCSV()" class="w-full bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                            Exportar Datos (CSV)
                         </button>
                         <button onclick="clearAllData()" class="w-full bg-danger text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition">
                             Limpiar Todos los Datos
@@ -876,7 +879,7 @@ function showSettings() {
     lucide.createIcons();
 }
 
-// Función para exportar datos
+// Función para exportar datos a JSON
 function exportData() {
     const data = {
         userName: localStorage.getItem('userName') || 'Usuario',
@@ -897,6 +900,44 @@ function exportData() {
     URL.revokeObjectURL(url);
 
     showToast('Datos exportados exitosamente.');
+}
+
+// Función para exportar datos a CSV
+function exportToCSV() {
+    // Combinar gastos e ingresos
+    const allTransactions = [
+        ...expenses.map(e => ({ tipo: 'Gasto', monto: e.amount, categoria: e.category, descripcion: e.name || '', fecha: e.date || '', nota: e.note || '' })),
+        ...receivables.map(r => ({ tipo: 'Ingreso', monto: r.amount, categoria: r.category, descripcion: r.name || '', fecha: '', nota: '' }))
+    ];
+
+    // Encabezados
+    const headers = ['Tipo', 'Monto', 'Categoría', 'Descripción', 'Fecha', 'Nota'];
+
+    // Crear filas
+    const rows = allTransactions.map(t => [
+        t.tipo,
+        t.monto.toString().replace('.', ','), // Formato argentino
+        t.categoria,
+        t.descripcion,
+        t.fecha,
+        t.nota
+    ]);
+
+    // Combinar en CSV
+    const csvContent = [headers, ...rows].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+
+    // Crear blob y descargar
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `finanzas-transacciones-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('Datos exportados a CSV exitosamente.');
 }
 
 // Función para limpiar todos los datos
